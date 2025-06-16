@@ -91,20 +91,68 @@ class RecipeController extends Controller
 
     public function update(Request $request, Recipe $recipe)
     {
-        $validated = $request->validate([
+        $recipeData = $request->all();
+
+        // Validasi data utama
+        $validator = Validator::make($recipeData, [
             'title' => 'sometimes|required|string|max:255',
             'prep' => 'sometimes|required|integer',
             'cook' => 'sometimes|required|integer',
             'level' => 'sometimes|required|string|max:50',
+
+            'galleries' => 'sometimes|array',
+            'galleries.*.path' => 'required_with:galleries|string',
+
+            'todos' => 'sometimes|array',
+            'todos.*.todo' => 'required_with:todos|string',
+
+            'ingredients' => 'sometimes|array',
+            'ingredients.*.title' => 'required_with:ingredients|string',
         ]);
 
-        if (isset($validated['title'])) {
-            $validated['slug'] = Str::slug($validated['title']);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $recipe->update($validated);
+        // Update slug jika title berubah
+        if (isset($recipeData['title'])) {
+            $recipeData['slug'] = Str::slug($recipeData['title']);
+        }
 
-        return response()->json($recipe);
+        // Update data utama
+        $recipe->update($recipeData);
+
+        // Handle galleries
+        if (array_key_exists('galleries', $recipeData)) {
+            $recipe->galleries()->delete(); // Hapus yang lama
+            if (!empty($recipeData['galleries'])) {
+                $recipe->galleries()->createMany($recipeData['galleries']);
+            }
+        }
+
+        // Handle todos
+        if (array_key_exists('todos', $recipeData)) {
+            $recipe->todos()->delete();
+            if (!empty($recipeData['todos'])) {
+                $recipe->todos()->createMany($recipeData['todos']);
+            }
+        }
+
+        // Handle ingredients
+        if (array_key_exists('ingredients', $recipeData)) {
+            $recipe->ingredients()->delete();
+            if (!empty($recipeData['ingredients'])) {
+                $recipe->ingredients()->createMany($recipeData['ingredients']);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Recipe updated successfully',
+            'data' => $recipe->load(['galleries', 'todos', 'ingredients'])
+        ]);
     }
 
     public function destroy(Recipe $recipe)
