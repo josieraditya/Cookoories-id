@@ -28,7 +28,7 @@ class RecipeRequest extends FormRequest
                     'title'     => ['required'],
                     'prep'    => ['required'],
                     'cook' => ['required'],
-                    'level.*'  => ['required',],
+                    'level'  => ['required',],
                 ];
             }
             case 'PUT':
@@ -38,7 +38,7 @@ class RecipeRequest extends FormRequest
                     'title'     => ['required'],
                     'prep'    => ['required'],
                     'cook' => ['required'],
-                    'level.*'  => ['required',],
+                    'level'  => ['required',],
                 ];                
             }
             default: break;

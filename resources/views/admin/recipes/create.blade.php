@@ -26,12 +26,7 @@
                     </div>
                     <div class="form-group">
                         <label for="level">{{ __('Level') }}</label>
-                        <select name="level" id="level" class="form-control" required>
-                            <option value="">-- Select Level --</option>
-                            <option value="For Beginner" {{ old('level') == 'For Beginner' ? 'selected' : '' }}>For Beginner</option>
-                            <option value="For Intermediate" {{ old('level') == 'For Intermediate' ? 'selected' : '' }}>For Intermediate</option>
-                            <option value="For Expert" {{ old('level') == 'For Expert' ? 'selected' : '' }}>For Expert</option>
-                        </select>
+                        <input type="text" class="form-control" id="level" placeholder="{{ __('level') }}" name="level" value="{{ old('level') }}" />
                     </div>
                     <button type="submit" class="btn btn-success">{{ __('Save') }}</button>
                 </form>

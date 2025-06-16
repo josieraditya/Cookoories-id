@@ -31,7 +31,7 @@ class RecipeController extends Controller
             'title' => 'required|string|max:255',
             'prep' => 'required|integer',
             'cook' => 'required|integer',
-            'level' => 'required|string',
+            'level' => 'required|string|max:50',
         ]);
     
         $data['slug'] = Str::slug($data['title']);
@@ -49,10 +49,10 @@ class RecipeController extends Controller
 
     public function update(RecipeRequest $request, Recipe $recipe): RedirectResponse
     {
-        if($request->validated()){
-            $slug = Str::slug(data_get($request, 'title', 'default-title'), '-');
-            $recipe->update($request->validated() + ['slug' => $slug]);
-        }
+        $validated = $request->validated();
+        
+        $slug = Str::slug($validated['title'], '-');
+        $recipe->update($validated + ['slug' => $slug]);
 
         return redirect()->route('admin.recipes.index')->with([
             'message' => 'successfully updated !',

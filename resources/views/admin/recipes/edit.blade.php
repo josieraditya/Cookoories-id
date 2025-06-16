@@ -29,11 +29,7 @@
                     </div>
                     <div class="form-group">
                         <label for="level">{{ __('Level') }}</label>
-                        <select name="level" id="level" class="form-control" required>
-                            <option {{ $recipe->level == 'For Beginner' ? 'selected' : null }} value="For Beginner">For Beginner</option>
-                            <option {{ $recipe->level == 'For Intermediate' ? 'selected' : null }} value="For Intermadiate">For Intermediate</option>
-                            <option {{ $recipe->level == 'For Expert' ? 'selected' : null }} value="For Expert">For Expert</option>
-                        </select>
+                        <input type="text" class="form-control" id="level" placeholder="{{ __('level') }}" name="level" value="{{ old('level', $recipe->level) }}" />
                     </div>
                     <button type="submit" class="btn btn-success">{{ __('Save')}}</button>
                 </form>
